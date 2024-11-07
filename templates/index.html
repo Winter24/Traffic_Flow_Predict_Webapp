@@ -1,0 +1,255 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm lưu lượng xe</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        /* Reset mặc định */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url('https://www.shutterstock.com/shutterstock/photos/650350348/display_1500/stock-vector-world-map-vector-background-for-website-design-network-flat-style-650350348.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center top;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background-color: #0eb2b8;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 15px;
+        }
+    
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        /* Container chính để chứa các cột */
+        .main-container {
+            display: flex;
+            max-width: 100%;
+            margin: auto;
+            gap: 20px;
+            flex-wrap: wrap; /* Cho phép các cột tự động xuống dòng trên màn hình nhỏ */
+        }
+    
+        /* Cột bên trái (tìm kiếm) */
+        .left-container {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 300px;
+            width: auto;
+        }
+    
+        /* Cột bên phải (bản đồ) */
+        .right-container {
+            flex: 2;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            min-width: 300px; 
+            width: auto;
+        }
+    
+        /* Phần tìm kiếm */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+    
+        .result-container {
+            overflow-y: auto;
+        }
+    
+        /* Nội dung của từng cột */
+        .input-container, .graph-container, .images-container {
+            width: 100%;
+        }
+    
+        /* Form styling */
+        .input-container {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .input-container label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    
+        .input-container select,
+        .input-container input {
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+    
+        .input-container button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+    
+        /* Định dạng của graph container */
+        .graph-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eaeaea;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    
+        /* Định dạng của images container */
+        .images-container img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 25px;
+        }
+    
+        /* Đáp ứng màn hình nhỏ */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+        }
+    </style>    
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <br>
+        <h1>DỰ ĐOÁN LƯU LƯỢNG XE GIAO THÔNG</h1>
+    </div>
+    <br>
+    <div class="main-container">
+
+        <!-- Cột Trái: Tìm Kiếm -->
+        <div class="left-container">
+            <br>
+            <!-- Phần Kết quả + Hình ảnh -->
+            <div class="result-container">
+                <div class="result-container result-search">
+                    {% if post_request_made %}
+                        <h2>Kết quả tìm kiếm</h2>
+                        <img src="data:image/png;base64,{{ camera_image_html }}" alt="Camera Image" width="550" height="300" class="center"/>
+                        <div>   {{vehicle_detected}}</div>
+                        <div>   {{total}}</div> 
+                    {% endif %}
+                </div>
+            </div>
+
+            <h2>Tìm Kiếm Địa Chỉ</h2>
+            <div class="search-container">
+                <div class="input-container">
+                    <form method="post">
+                        <label for="day">Ngày:</label>
+                        <select name="day" id="day">
+                            {% for i in range(1, 32) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="month">Tháng:</label>
+                        <select name="month" id="month">
+                            <option value="1">Tháng 1</option>
+                            <option value="2">Tháng 2</option>
+                            <option value="3">Tháng 3</option>
+                            <option value="4">Tháng 4</option>
+                            <option value="5">Tháng 5</option>
+                            <option value="6">Tháng 6</option>
+                            <option value="7">Tháng 7</option>
+                            <option value="8">Tháng 8</option>
+                            <option value="9">Tháng 9</option>
+                            <option value="10">Tháng 10</option>
+                            <option value="11">Tháng 11</option>
+                            <option value="12">Tháng 12</option>
+                            <!-- Options here -->
+                        </select>
+                    
+                        <label for="year">Năm:</label>
+                        <input type="number" id="year" name="year" value="2024" required>
+
+                        <label for="hour">Giờ:</label>
+                        <input type="number" name="hour" id="hour" min="1" max="12" required>
+
+                        <label for="am_pm">AM/PM:</label>
+                        <select name="am_pm" id="am_pm">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+
+                        <label for="minute">Phút:</label>
+                        <select name="minute" id="minute">
+                            <option value="00">00</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                        </select>
+
+                        <label for="street_name_start">Tuyến đường:</label>
+                        <input type="text" name="street_name_start" id="street_name_start" required>
+                        
+                        <label for="street_name_end"> - </label>
+                        <input type="text" name="street_name_end" id="street_name_end" required>
+
+                        <button type="submit">Predict</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột Phải: Bản đồ -->
+        <div class="right-container">
+            <br>
+            <h2>Bản đồ</h2>
+            <div class="graph-container">
+                <div>{{ graph_html | safe }}</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
