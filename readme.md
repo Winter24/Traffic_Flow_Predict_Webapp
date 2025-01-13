@@ -3,7 +3,7 @@
 This project is a web application designed to predict traffic flow using machine learning techniques. The web app allows users to input traffic data and receive predictions regarding future traffic conditions, making it useful for city planners, transportation authorities, and commuters looking for real-time predictions.
 
 <p align="center">
-  <img src="https://www.facebook.com/photo?fbid=2924030211078913&set=pcb.2924035807745020" alt="Centered image" width="600" height="400" />
+  <img src="" alt="Centered image" width="600" height="400" />
 </p>
 
 ## Table of Contents
