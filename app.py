@@ -55,8 +55,8 @@ colors = {
 app = Flask(__name__)
 
 # Load yolov3-tiny weight and config of dataset Vietnam's traffic
-weightsPath = './yolov3.weights'
-configPath = './yolov3_training.cfg'
+weightsPath = '/Train code and data/yolov3.weights'
+configPath = '/Train code and data/yolov3.cfg'
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 
 # Get class object in model
@@ -65,7 +65,7 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers().flatt
 
 # Select model
 # grid = './svm_grid_model_no_date_time.joblib'
-grid = './svm_grid_model.joblib'
+grid = '/Train code and data/svm_grid_model.joblib'
 def load_model():
     return load(grid)
 

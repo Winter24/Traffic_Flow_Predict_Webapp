@@ -2,6 +2,8 @@
 
 This project is a web application designed to predict traffic flow using machine learning techniques. The web app allows users to input traffic data and receive predictions regarding future traffic conditions, making it useful for city planners, transportation authorities, and commuters looking for real-time predictions.
 
+Update: We just got 9.5/10 on our Final Project with this.
+
 <p align="center">
   <img src="https://github.com/Winter24/Traffic_Flow_Predict_Webapp/blob/main/ima.jpg" alt="Centered image" width="600" height="400" />
 </p>
